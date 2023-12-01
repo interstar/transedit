@@ -29,9 +29,11 @@ Want to hand edit and save the final results? Yes, you can.
 
 ## Quick start.
 
-Make sure you have the dependencies. Basically tkinter
+Make sure you have the dependencies. Basically tkinter and BeautifulSoup
 
     sudo apt-get install python3-tk 
+    
+    pip install beautifulsoup4
     
 in Ubuntu.
 
