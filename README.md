@@ -75,5 +75,5 @@ We also include BeautifulSoup, so we can process HTML etc files.
 def transform(text) :
   soup = BeautifulSoup(text)
   return soup.get_text()
-``
+```
 
