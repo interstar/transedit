@@ -66,3 +66,14 @@ P(text) creates a P object containing the text. We can then chain up as many tra
 * `replace` - a string replacement applied to each line.
 
 `run()` runs the text lines through the pipeline and returns the final transformed text, which will get displayed in the right panel.
+
+### Beautiful Soup
+
+We also include BeautifulSoup, so we can process HTML etc files.
+
+```
+def transform(text) :
+  soup = BeautifulSoup(text)
+  return soup.get_text()
+``
+

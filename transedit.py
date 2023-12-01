@@ -4,7 +4,11 @@ from tkinter import scrolledtext
 import tkinter.filedialog as fd
 import re
 
+from bs4 import BeautifulSoup
+
 import sys
+
+ 
 
 class P:
     def __init__(self, text):
@@ -52,68 +56,94 @@ class ScriptRunner:
 
     def update_transform(self, new_transform_code):
         # Define a local transform function based on the new code
-        local_vars = {'P': P,'re': re}
+        local_vars = {'P': P,'re': re, 'BeautifulSoup': BeautifulSoup}
         exec(new_transform_code, globals(), local_vars)
         self.transform = local_vars.get('transform', self.transform)
 
     def transform(self, text):
         return text
 
-def process_script():
-    script_code = script_editor.get("1.0", tk.END)
-    script_runner.update_transform(script_code)
-    result = script_runner.transform(file_data)
-    result_editor.delete("1.0", tk.END)
-    result_editor.insert("1.0", result)
+
+class TransEdit :
+
+    def __init__(self,init_data="") :
+        self.file_data = init_data
+        self.script_runner = ScriptRunner()
+        
+        self.root = tk.Tk()
+        self.root.title("Transedit")
+
+        self.frame_left = tk.Frame(self.root)
+        self.frame_left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        self.frame_right = tk.Frame(self.root)
+        self.frame_right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+        self.script_editor = scrolledtext.ScrolledText(self.frame_left, wrap=tk.WORD, height=10)
+        self.script_editor.pack(fill=tk.BOTH, expand=True)
+
+        self.result_editor = scrolledtext.ScrolledText(self.frame_right, wrap=tk.WORD, height=10)
+        self.result_editor.pack(fill=tk.BOTH, expand=True)
+
+        # Buttons
+        self.load_data_btn = tk.Button(self.root, text="Load Data File", command=self.load_data_file)
+        self.load_data_btn.pack(side=tk.TOP)
+        
+        self.load_script_btn = tk.Button(self.root, text="Load Script File", command=self.load_script_file)
+        self.load_script_btn.pack(side=tk.TOP)
+        
+
+        self.process_button = tk.Button(self.root, text="Process Script", command=self.process_script)
+        self.process_button.pack(fill=tk.X)
+
+        self.save_button = tk.Button(self.root, text="Save Result", command=self.save_file)
+        self.save_button.pack(fill=tk.X)
+        
+        self.root.mainloop()
+        
+    def process_script(self):
+        script_code = self.script_editor.get("1.0", tk.END)
+        self.script_runner.update_transform(script_code)
+        result = self.script_runner.transform(self.file_data)
+        self.result_editor.delete("1.0", tk.END)
+        self.result_editor.insert("1.0", result)
+
+    def load_data_file(self):
+        global file_data
+        file_path = fd.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        if file_path:
+            with open(file_path, 'r') as file:
+                self.file_data = file.read()        
+
+    def load_script_file(self):
+        file_path = fd.askopenfilename(title="Select a script file", filetypes=[("Python files", "*.py"), ("Text files","*.txt"), ("All files", "*.*")])
+        if file_path:
+            with open(file_path, 'r') as file:
+                script = file.read()
+            self.script_editor.delete('1.0', tk.END)
+            self.script_editor.insert(tk.END, script)
 
 
+    def save_file(self):
+        file_path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(self.result_editor.get("1.0", tk.END))
 
-def save_file():
-    file_path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-    if file_path:
-        with open(file_path, 'w') as file:
-            file.write(result_editor.get("1.0", tk.END))
-
-# Read file data if a file name is provided
-if len(sys.argv) > 1:
-    file_name = sys.argv[1]
-    try:
-        with open(file_name, 'r') as file:
-            file_data = file.read()
-    except IOError:
-        print(f"Could not read file: {file_name}")
-        sys.exit()
-else:
-    print("No file name provided. Exiting.")
-    sys.exit()
-
-# GUI setup
-# GUI setup
-root = tk.Tk()
-root.title("Text Processor")
-
-frame_left = tk.Frame(root)
-frame_left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-frame_right = tk.Frame(root)
-frame_right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
-
-script_editor = scrolledtext.ScrolledText(frame_left, wrap=tk.WORD, height=10)
-script_editor.pack(fill=tk.BOTH, expand=True)
-
-result_editor = scrolledtext.ScrolledText(frame_right, wrap=tk.WORD, height=10)
-result_editor.pack(fill=tk.BOTH, expand=True)
-
-process_button = tk.Button(root, text="Process Script", command=process_script)
-process_button.pack(fill=tk.X)
-
-save_button = tk.Button(root, text="Save Result", command=save_file)
-save_button.pack(fill=tk.X)
-
-
-script_runner = ScriptRunner()
- 
-root.mainloop()
+if __name__ == "__main__" :
+    transeditor = None
+    if len(sys.argv) > 1:
+        file_name = sys.argv[1]
+        try:
+            with open(file_name, 'r') as file:
+                transeditor=TransEdit(file.read())
+        except IOError:
+            print(f"Could not read file: {file_name}")
+            sys.exit()
+    else:
+        transeditor=TransEdit()
+        
+     
 
 
 
