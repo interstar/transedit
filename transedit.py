@@ -36,13 +36,29 @@ class P:
         self.pipeline.append(fn)
         return self
 
+    def re_search(self, pattern):
+        def fn(lines):
+            for line in lines:
+                if re.search(pattern, line):
+                    yield line
+        self.pipeline.append(fn)
+        return self
+
+
     def replace(self, old, new):
         def fn(lines):
             for line in lines:
                 yield line.replace(old, new)
         self.pipeline.append(fn)
         return self
-
+      
+    def re_sub(self, pattern, new_pattern):  # Added re_sub function
+        def fn(lines):
+            for line in lines:
+                yield re.sub(pattern, new_pattern, line)
+        self.pipeline.append(fn)
+        return self
+        
     def run(self):
         current = self.start
         for process in self.pipeline:
