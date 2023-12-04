@@ -115,6 +115,13 @@ class TransEdit :
         self.save_button = tk.Button(self.root, text="Save Result", command=self.save_file)
         self.save_button.pack(fill=tk.X)
         
+        # Pre-fill the script editor with the default script
+        default_script = """def transform(text) :
+    return text"""
+        self.script_editor.insert(tk.END, default_script)  # Insert the default script
+
+        self.process_script()        
+        
         self.root.mainloop()
         
     def process_script(self):
