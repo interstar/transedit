@@ -96,7 +96,7 @@ For example
 
 ```
 def transform(text):
-    p = P(text).re_search_fail('youtube').re_sub(r'(.+?),(.+)',r'\2,\1')
+    p = P(text).re_search_fails('youtube').re_sub(r'(.+?),(.+)',r'\2,\1')
     return p.run()
 ```
 
