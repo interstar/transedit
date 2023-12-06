@@ -138,12 +138,19 @@ class TransEdit :
         self.result_editor.delete("1.0", tk.END)
         self.result_editor.insert("1.0", result)
 
+
     def load_data_file(self):
-        global file_data
         file_path = fd.askopenfilename(title="Select a file", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         if file_path:
-            with open(file_path, 'r') as file:
-                self.file_data = file.read()        
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    self.file_data = file.read()
+            except UnicodeDecodeError:
+                # If UTF-8 decoding fails, try 'latin-1' encoding
+                with open(file_path, 'r', encoding='latin-1') as file:
+                    self.file_data = file.read()
+
+
 
     def load_script_file(self):
         file_path = fd.askopenfilename(title="Select a script file", filetypes=[("Python files", "*.py"), ("Text files","*.txt"), ("All files", "*.*")])
@@ -152,6 +159,7 @@ class TransEdit :
                 script = file.read()
             self.script_editor.delete('1.0', tk.END)
             self.script_editor.insert(tk.END, script)
+
 
 
     def save_file(self):
