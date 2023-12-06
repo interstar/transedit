@@ -21,15 +21,15 @@ Alternatively, you can open in a normal text editor and use the search and repla
 
 In other words, we often want to do bulk processing on files, interactively, and have the option of tweaking the transformation as we look over the results.
 
-So what you want is the benefits of both a pipeline of simple transformations AND the interactivity of a text editor.
+So what we want is the benefits of both a pipeline of simple transformations AND the interactivity of a text editor.
 
 That's where transedit comes in.
 
 It's simple. Two panels. One for the script that processes the input file. One for the result of the processing.
 
-Want to keep tweaking and fiddling with the script? You can. The processing is non-destructive.
+The processing pipeline is non-destructive. You can change and refine your processing pipeline as much as you like.
 
-Want to hand edit and save the final results when you are satisfied? Yes, you can.
+Want to hand edit and save the final results when you are satisfied? Yes, you can do that too. (In fact, you should remember to save the output buffer when you are happy with the result)
 
 ## Quick start.
 
