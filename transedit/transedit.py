@@ -43,7 +43,14 @@ class P:
                     yield line
         self.pipeline.append(fn)
         return self
-
+        
+    def re_search_fails(self, pattern):
+        def fn(lines):
+            for line in lines:
+                if not re.search(pattern, line):
+                    yield line
+        self.pipeline.append(fn)
+        return self
 
     def replace(self, old, new):
         def fn(lines):
@@ -152,9 +159,11 @@ class TransEdit :
         if file_path:
             with open(file_path, 'w') as file:
                 file.write(self.result_editor.get("1.0", tk.END))
+   
+   
+transeditor = None
 
-if __name__ == "__main__" :
-    transeditor = None
+def main() :
     if len(sys.argv) > 1:
         file_name = sys.argv[1]
         try:
@@ -167,7 +176,8 @@ if __name__ == "__main__" :
         transeditor=TransEdit()
         
      
-
+if __name__ == '__main__' :
+    main()
 
 
 
